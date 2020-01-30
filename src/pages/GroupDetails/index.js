@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert } from 'react-native';
+import Lottie from 'lottie-react-native';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-root-toast';
 
+import loading from '../../animations/loading';
 import * as GroupActions from '../../store/actions/Grupos';
 import {Container} from '../../components/Container';
 import { 
@@ -23,7 +25,7 @@ import {
   ModalContainer,
   Formulario,
   BotaoConcluirEdicao,
-  Botao
+  Botao,
 } from './styles';
 
 import status from '../../utils/status'
@@ -45,6 +47,7 @@ export default function GroupDetails({navigation}) {
   const [nomeParticipante, setNomeParticipante] = useState('');
   const [emailParticipante, setEmailParticipante] = useState('');
   const [idParticipante, setIdParticipante] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   let inputs = [];
 
@@ -58,6 +61,7 @@ export default function GroupDetails({navigation}) {
 
 
   async function  Sortear(){
+    setIsLoading(true);
     let grupoSorteado = {...grupo};
     let ids = [];
     grupo.participantes.map(p=>{
@@ -80,6 +84,8 @@ export default function GroupDetails({navigation}) {
     //ENVIAR E-MAILS PARA OS PARTICIPANTES ( LOADING NA TELA ANTES DE VOLTAR PARA OS GRUPOS)
     try{
       await AsyncStorage.setItem('Grupos', JSON.stringify(grupos));
+      // EnviaEmails();
+      setIsLoading(false);
     }catch(e){}
   }
 
@@ -231,6 +237,16 @@ export default function GroupDetails({navigation}) {
         </Modal>
     )
   }
+
+  function Sorteando(){
+    if(isLoading){
+      return(
+        <View style={{flex: 1, width: 200, height: 200, alignSelf: 'center'}}>
+          <Lottie source={loading} autoPlay loop />
+        </View>
+      )
+    }
+  }
   
 
   return (
@@ -240,62 +256,69 @@ export default function GroupDetails({navigation}) {
           <Text numberOfLines={1} style={styles.titulo}>{grupo.nome}</Text>
         </Header>
         
-        <Acoes marginTop={0}>
-          <Botao color="#ff4700"  onPress={()=>abrirDialogExclusao('Excluir grupo', 'Tem certeza que deseja excluir o grupo ?', DeletarGrupo)}> 
-            <View style={styles.acoes}>
-              <MCIcon name="delete-forever" size={22} color="#fff" />
-              <Text numberOfLines={1} style={styles.txtAcao}>Grupo</Text>
-            </View>
-          </Botao>
-          <Botao color="#0000ff"  onPress={()=>AbrirFormAddParticipante()}> 
-            <View style={styles.acoes}>
-              <FAIcon name="plus" size={22} color="#fff" />
-              <Text numberOfLines={1} style={styles.txtAcao}>Novo participante</Text>
-            </View>
-          </Botao>
-        </Acoes>
-
-        <Participantes 
-            data={ grupo.participantes } keyExtractor={ item => item.id }  
-            renderItem={({item}) => 
-              <Participante>
-                <View>
-                  <Text numberOfLines={1} style={styles.txt} numberOfLines={1}>{item.nome}</Text>
-                  <Text style={styles.txt} numberOfLines={1}>{item.email}</Text>
-                </View>
+        {!isLoading &&(
+          <>
+            <Acoes marginTop={0}>
+              <Botao color="#ff4700"  onPress={()=>abrirDialogExclusao('Excluir grupo', 'Tem certeza que deseja excluir o grupo ?', DeletarGrupo)}> 
                 <View style={styles.acoes}>
-                  <BotaoEditar onPress={()=>AbrirFormEditar(item)}>
-                    <MIcon name="mode-edit" color="#fff" size={25} />
-                  </BotaoEditar>
-                  <BotaoEditar onPress={()=>abrirDialogExclusao('Excluir participante', 'Tem certeza que deseja excluir o participante ?', ()=>ExcluirParticipante(item.id))}>
-                    <ADIcon name="deleteuser" color="#fff" size={25} />
-                  </BotaoEditar>
+                  <MCIcon name="delete-forever" size={22} color="#fff" />
+                  <Text numberOfLines={1} style={styles.txtAcao}>Grupo</Text>
                 </View>
-              </Participante>
-            }
-        />
-
-        <Footer>
-            <Status>
-              <Text style={styles.txtbranco}>Status:</Text>
-              <Text style={styles.status}>{grupo.status}</Text>
-            </Status>
-            {grupo.status === status.A_SORTEAR ? (
-              <Botao onPress={()=>Sortear()}>
-                <Text style={styles.txtbranco} >Sortear</Text>
               </Botao>
-            ):(
-              <Acoes>
-                <Botao color="#008000" onPress={()=>Sortear()}>
-                  <Text style={styles.txtbranco} >Resortear</Text>
-                </Botao>
-                <Botao color="#7715c1" onPress={()=>reenviarEmails()()}>
-                  <Text numberOfLines={1} style={styles.txtbranco} >Reenviar e-mails</Text>
-                </Botao>
-              </Acoes>
-            )}
-        </Footer>
+              <Botao color="#0000ff"  onPress={()=>AbrirFormAddParticipante()}> 
+                <View style={styles.acoes}>
+                  <FAIcon name="plus" size={22} color="#fff" />
+                  <Text numberOfLines={1} style={styles.txtAcao}>Novo participante</Text>
+                </View>
+              </Botao>
+            </Acoes>
+
+            <Participantes 
+                data={ grupo.participantes } keyExtractor={ item => item.id }  
+                renderItem={({item}) => 
+                  <Participante>
+                    <View>
+                      <Text numberOfLines={1} style={styles.txt} numberOfLines={1}>{item.nome}</Text>
+                      <Text style={styles.txt} numberOfLines={1}>{item.email}</Text>
+                    </View>
+                    <View style={styles.acoes}>
+                      <BotaoEditar onPress={()=>AbrirFormEditar(item)}>
+                        <MIcon name="mode-edit" color="#fff" size={25} />
+                      </BotaoEditar>
+                      <BotaoEditar onPress={()=>abrirDialogExclusao('Excluir participante', 'Tem certeza que deseja excluir o participante ?', ()=>ExcluirParticipante(item.id))}>
+                        <ADIcon name="deleteuser" color="#fff" size={25} />
+                      </BotaoEditar>
+                    </View>
+                  </Participante>
+                }
+            />
+
+            <Footer>
+                <Status>
+                  <Text style={styles.txtbranco}>Status:</Text>
+                  <Text style={styles.status}>{grupo.status}</Text>
+                </Status>
+                {grupo.status === status.A_SORTEAR ? (
+                  <View style={{marginTop: 20, marginHorizontal: 20}}>
+                    <Botao color="#008000" onPress={()=>Sortear()}>
+                      <Text style={styles.txtbranco} >Sortear</Text>
+                    </Botao>
+                  </View>
+                ):(
+                  <Acoes>
+                    <Botao color="#008000" onPress={()=>Sortear()}>
+                      <Text style={styles.txtbranco} >Resortear</Text>
+                    </Botao>
+                    <Botao color="#7715c1" onPress={()=>reenviarEmails()()}>
+                      <Text numberOfLines={1} style={styles.txtbranco} >Reenviar e-mails</Text>
+                    </Botao>
+                  </Acoes>
+                )}
+            </Footer>
+          </>
+        )}
         {FormularioEditarParticipante()}
+        {Sorteando()}
     </Container>
   );
 }

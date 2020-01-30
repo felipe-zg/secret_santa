@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import NewGroup from './pages/NewGroup';
 import GroupDetails from './pages/GroupDetails';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const Routes = createAppContainer(
     createStackNavigator(
@@ -31,6 +32,12 @@ const Routes = createAppContainer(
                 screen: GroupDetails,
                 navigationOptions:{
                     title: 'Detalhes',
+                }
+            },
+            TelaPoliticaDePrivacidade:{
+                screen: PrivacyPolicy,
+                navigationOptions:{
+                    title: 'Política de privacidade',
                 }
             },
         },

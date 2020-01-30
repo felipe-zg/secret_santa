@@ -9,11 +9,8 @@
 # CLOUD FUNCTIONS 
 #
 cloud_functions/
-*.firebaseerc
-firebase.json
 node_modules/
-package.json
-package-lock.json
+
 
 # Xcode
 #
@@ -42,8 +39,8 @@ build/
 local.properties
 *.iml
 
-android/app/
-google-services.json
+android/app/google-services.json
+
 
 
 # node.js

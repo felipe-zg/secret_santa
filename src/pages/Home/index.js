@@ -59,8 +59,8 @@ export default function Home({navigation}) {
                 <Botao onPress={()=>navigation.navigate('TelaNovoGrupo')}>
                   <Texto>Criar novo grupo</Texto>
                 </Botao>
-                <Botao onPress={criaNovoGrupoPremium}>
-                  <Texto>Criar novo grupo premium</Texto>
+                <Botao onPress={()=>navigation.navigate('TelaPoliticaDePrivacidade')}>
+                  <Texto>Política de privacidade</Texto>
                 </Botao>
                 <Botao onPress={logout}>
                   <Texto>Sair</Texto>
