@@ -15,7 +15,7 @@ export const Grupos = styled.FlatList`
 `;
 
 export const ViewGrupos = styled.View`
-    flex: 1;
+    flex: 2;
 `;
 
 export const Grupo = styled.TouchableOpacity`

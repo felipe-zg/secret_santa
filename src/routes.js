@@ -50,10 +50,8 @@ const Routes = createAppContainer(
                     backgroundColor:'#D50000',
                 },
             },
+            initialRouteName: "TelaHome"
         },
-        {
-            initialRouteName: "TelaLogin",
-        }
     )
 );
 

@@ -42,7 +42,7 @@ export default function Home({navigation}) {
                   data={ grupos } keyExtractor={ item => item.id }  
                   renderItem={({item}) => 
                     <Grupo onPress={()=>navigation.navigate('TelaDetalhesDoGrupo', {id:item.id})}> 
-                        <FAIcon name="tree" size={30} color="#fff" />
+                        <FAIcon name={item.emoji} size={30} color="#fff" />
                         <Texto>{item.nome}</Texto> 
                     </Grupo> 
                   }
@@ -59,12 +59,9 @@ export default function Home({navigation}) {
                 <Botao onPress={()=>navigation.navigate('TelaNovoGrupo')}>
                   <Texto>Criar novo grupo</Texto>
                 </Botao>
-                <Botao onPress={()=>navigation.navigate('TelaPoliticaDePrivacidade')}>
-                  <Texto>Política de privacidade</Texto>
-                </Botao>
-                <Botao onPress={logout}>
-                  <Texto>Sair</Texto>
-                </Botao>
+                <TouchableOpacity style={styles.politica} onPress={()=>navigation.navigate('TelaPoliticaDePrivacidade')}>
+                  <Text style={styles.txtPolitica}>Política de privacidade</Text>
+                </TouchableOpacity>
             </Acoes>
           </ViewAcoes>
       </Container>
@@ -91,4 +88,13 @@ const styles = StyleSheet.create({
     paddingHorizontal:  10,
     paddingBottom: 10,
   },
+  politica:{
+    marginTop: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  txtPolitica:{
+    fontSize: 10,
+    color: '#fff',
+  }
 })

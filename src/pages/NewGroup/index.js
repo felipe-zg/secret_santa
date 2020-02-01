@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Picker } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-root-toast';
 import {useDispatch} from 'react-redux';
@@ -20,6 +20,34 @@ import {
 import status from '../../utils/status';
 import * as GruposActions from '../../store/actions/Grupos';
 
+const EMOTES = [
+    {
+        id: 1,
+        nome: 'tree',
+        selected: false
+    },
+    {
+        id: 2,
+        nome: 'gift',
+        selected: false
+    },
+    {
+        id: 3,
+        nome: 'star',
+        selected: false
+    },
+    {
+        id: 4,
+        nome: 'soccer-ball-o',
+        selected: false
+    },
+    {
+        id: 5,
+        nome: 'sticky-note',
+        selected: false
+    },
+]
+
 export default function NewGroup({navigation}) {
     const [nomeDoGrupo, setNomeDoGrupo] = useState('');
     const [emoji, setEmoji] = useState('');
@@ -28,12 +56,31 @@ export default function NewGroup({navigation}) {
     const [nomeNovoParticipante, setNomeNovoParticipante] = useState('');
     const [emailNovoParticipante, setEmailNovoParticipante] = useState('');
     const dispacth = useDispatch();
-   
+    const [emojis, setEmojis] = useState(EMOTES);
+
     const inputs = [];
+
+    function selecionaEmoji(id){
+        let novoState = [...emojis];
+        novoState.map(emoji=>{
+            if(emoji.id===id){
+                emoji.selected = true;
+                setEmoji(emoji.nome);
+            }else{
+                if(emoji.selected) emoji.selected = false;
+            }
+        })
+        setEmojis(novoState);
+
+    }
 
     function CriaGrupo(){
         if(nomeDoGrupo ===''){
             Toast.show('O nome do grupo é obrigatório');
+            return;
+        }
+        if(emoji ===''){
+            Toast.show('Selecione um emoji');
             return;
         }
         if(participantes.length < 2 ){
@@ -127,7 +174,15 @@ export default function NewGroup({navigation}) {
                 <Text style={styles.label}>Nome do grupo:</Text>
                 <Input value={nomeDoGrupo} onChangeText={nome=>setNomeDoGrupo(nome)}/>
                 <Text style={styles.label}>Escolha um emoji:</Text>
-                <Input value={emoji} onChangeText={emoji=>setEmoji(emoji)}/>
+                <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+                    {emojis.map(emoji=>(
+                        <TouchableOpacity key={emoji.id} 
+                                onPress={()=>selecionaEmoji(emoji.id)}
+                                style={emoji.selected?styles.viewEmojiSelecionado:styles.viewEmoji}>
+                            <Icon name={emoji.nome} color="#fff" size={25} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </FormularioNovoGrupo>
 
             <ListaParticipantes>
@@ -188,5 +243,14 @@ const styles = StyleSheet.create({
     titulo:{
         color: '#fff',
         marginLeft: 25,
+    },
+    viewEmoji:{
+        borderRadius: 4,
+        padding: 10,
+    },
+    viewEmojiSelecionado:{
+        borderRadius: 4,
+        padding: 10,
+        backgroundColor: 'rgba(0,0,0,.4)'
     }
 })
