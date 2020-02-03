@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import {produce} from 'immer';
 import Lottie from 'lottie-react-native';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
@@ -16,7 +17,7 @@ import ADIcon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import Toast from 'react-native-root-toast';
-import axios from 'axios';
+import FBFunctions from '@react-native-firebase/functions';
 
 import loading from '../../animations/loading';
 import * as GroupActions from '../../store/actions/Grupos';
@@ -38,28 +39,15 @@ import {
 
 import status from '../../utils/status';
 
-reenviarEmails = () => {
-  console.warn('reenviando e-mails');
-};
-
-emailSender = async (dest, amigo) => {
-  await axios({
-    method: 'post',
-    url: 'https://us-central1-amigo-oculto-bcea3.cloudfunctions.net/sendMail',
-    data: {
-      dest,
-      assunto: 'Seu amigo oculto é...',
-      mensagem: `O seu amigo oculto é o ${amigo}`,
-      replyTo: 'felipe_zeba@outlook.com',
-    },
-  });
-};
-
 enviarEmails = async participantes => {
-  participantes.map(participante => () => {
-    const amigo = participantes.filter(p => p.id === participante.amigo);
-    emailSender(participante.email, amigo);
-  });
+  await FBFunctions()
+    .httpsCallable('sendMail')({
+      participantes,
+    })
+    .then(() => Toast.show('E-mails enviados com sucesso'))
+    .catch(e =>
+      Toast.show('Ocorreu um erro ao enviar os e-mails, Tente novamente'),
+    );
 };
 
 export default function GroupDetails({navigation}) {
@@ -85,32 +73,52 @@ export default function GroupDetails({navigation}) {
 
   async function Sortear() {
     setIsLoading(true);
-    let grupoSorteado = {...grupo};
     let ids = [];
     grupo.participantes.map(p => {
       ids.push(p.id);
     });
 
-    grupoSorteado.participantes.map(p => {
-      let sorteado = false;
-      while (!sorteado) {
-        let idSorteado = Math.floor(Math.random() * ids.length);
-        if (ids[idSorteado] !== p.id) {
-          sorteado = true;
-          p.amigo = ids[idSorteado];
-          ids.splice(idSorteado, 1);
+    const grupoSorteado = produce(grupo, draft => {
+      draft.participantes.map(participante => {
+        let sorteado = false;
+        while (!sorteado) {
+          let idSorteado = Math.floor(Math.random() * ids.length);
+          if (ids[idSorteado] !== participante.id) {
+            sorteado = true;
+            draft.participantes.map(amigo => {
+              if (amigo.id === ids[idSorteado]) {
+                participante.amigo = amigo.nome;
+              }
+            });
+            ids.splice(idSorteado, 1);
+          }
         }
-      }
+      });
+      draft.status = status.SORTEADO;
     });
-    grupoSorteado.status = status.SORTEADO;
+
     dispatch(GroupActions.atualizarGrupo(grupoSorteado));
-    //ENVIAR E-MAILS PARA OS PARTICIPANTES ( LOADING NA TELA ANTES DE VOLTAR PARA OS GRUPOS)
+    // ENVIAR E-MAILS PARA OS PARTICIPANTES ( LOADING NA TELA ANTES DE VOLTAR PARA OS GRUPOS)
     try {
       await AsyncStorage.setItem('Grupos', JSON.stringify(grupos));
       await enviarEmails(grupoSorteado.participantes);
+      Toast.show('Sorteio concluido e e-mails enviados com sucesso');
       setIsLoading(false);
+      navigation.goBack();
     } catch (e) {
-      console.warn(e);
+      Toast.show('Ocorreu um erro ao sortear, tente novamente');
+      setIsLoading(false);
+    }
+  }
+
+  async function ReenviarEmails() {
+    setIsLoading(true);
+    try {
+      await enviarEmails(grupo.participantes);
+      setIsLoading(false);
+      navigation.goBack();
+    } catch (e) {
+      Toast.show('Erro ao reenviar e-mails, tente novamente');
       setIsLoading(false);
     }
   }
@@ -133,9 +141,6 @@ export default function GroupDetails({navigation}) {
 
   function AbrirFormAddParticipante() {
     setModalIsVisible(true);
-    // grupo.participantes.map(p=>{
-    //   console.warn(p.id);
-    // })
   }
 
   async function ExcluirParticipante(idParticipante) {
@@ -186,7 +191,7 @@ export default function GroupDetails({navigation}) {
       [
         {
           text: 'Cancelar',
-          onPress: () => console.log('exclusão cancelada'),
+          onPress: () => {},
           style: 'cancel',
         },
         {
@@ -373,7 +378,7 @@ export default function GroupDetails({navigation}) {
                 <Botao color="#008000" onPress={() => Sortear()}>
                   <Text style={styles.txtbranco}>Resortear</Text>
                 </Botao>
-                <Botao color="#7715c1" onPress={() => reenviarEmails()()}>
+                <Botao color="#7715c1" onPress={() => ReenviarEmails()}>
                   <Text numberOfLines={1} style={styles.txtbranco}>
                     Reenviar e-mails
                   </Text>

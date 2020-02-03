@@ -29,18 +29,18 @@ export const Participante = styled.View`
 `;
 
 export const Botao = styled.TouchableOpacity`
-  background : ${props => props.color};
+  background: ${props => props.color};
   align-items: center;
   justify-content: center;
-  padding: 5px 20px;;
+  padding: 5px 20px;
   border-radius: 4px;
 `;
 
 export const Acoes = styled.View`
-   flex-direction: row;
-   margin: ${props => props.marginTop} 20px;
-   align-items: center;
-   justify-content: space-between;
+  flex-direction: row;
+  margin: ${props => props.marginTop} 20px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const Footer = styled.ScrollView`
@@ -60,23 +60,22 @@ export const Status = styled.View`
 
 export const BotaoEditar = styled.TouchableOpacity`
   border-radius: 4px;
-  padding:  10px;
+  padding: 10px;
 `;
 
 export const BotaoGrande = styled.TouchableOpacity`
   border-radius: 4px;
   margin: 20px;
-  padding:  5px;
+  padding: 5px;
   background: #008000;
   align-items: center;
 `;
-
 
 export const ModalContainer = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  background-color: #D50000;
+  background-color: #d50000;
 `;
 
 export const Formulario = styled.View`
@@ -87,14 +86,14 @@ export const Formulario = styled.View`
 `;
 
 export const Input = styled.TextInput.attrs({
-  placeholderTextColor:'#D50000'
+  placeholderTextColor: '#D50000',
 })`
   border: 1px solid #fff;
   border-radius: 4px;
   margin: 5px 0;
   background: #fff;
   color: #000;
-  opacity: .9;
+  opacity: 0.9;
   padding: 0px;
 `;
 
@@ -108,6 +107,3 @@ export const BotaoConcluirEdicao = styled.TouchableOpacity`
   width: 180px;
   align-self: center;
 `;
-
-
-

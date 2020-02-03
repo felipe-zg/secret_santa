@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
 
 export const Container = styled(LinearGradient).attrs({
-    colors: [  '#ff0000', '#7a1b0c']
+  colors: ['#ff0000', '#7a1b0c'],
 })`
   flex: 1;
 `;
@@ -15,7 +15,7 @@ export const Grupos = styled.FlatList`
 `;
 
 export const ViewGrupos = styled.View`
-    flex: 2;
+  flex: 2;
 `;
 
 export const Grupo = styled.TouchableOpacity`
@@ -41,13 +41,12 @@ export const Acoes = styled.View`
 `;
 
 export const Botao = styled.TouchableOpacity.attrs({
-    type: 'submit'
+  type: 'submit',
 })`
   justify-content: center;
   align-items: center;
   background: #008000;
   border-radius: 8px;
   padding: 4px 12px;
-  margin: 20px ;
+  margin: 20px;
 `;
-

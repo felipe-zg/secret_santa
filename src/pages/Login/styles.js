@@ -1,9 +1,8 @@
 import styled from 'styled-components/native';
 import LinearGradient from 'react-native-linear-gradient';
 
-
 export const Container = styled(LinearGradient).attrs({
-    colors: [ '#7a1b0c', '#ff0000']
+  colors: ['#7a1b0c', '#ff0000'],
 })`
   flex: 1;
   justify-content: space-around;
@@ -22,18 +21,18 @@ export const Formulario = styled.KeyboardAvoidingView`
 `;
 
 export const Input = styled.TextInput.attrs({
-    placeholderTextColor:'#D50000'
+  placeholderTextColor: '#D50000',
 })`
-    border: 1px solid #fff;
-    border-radius: 4px;
-    margin: 10px 0;
-    background: #fff;
-    color: #000;
-    opacity: .9;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  margin: 10px 0;
+  background: #fff;
+  color: #000;
+  opacity: 0.9;
 `;
 
 export const Botao = styled.TouchableOpacity.attrs({
-    type: 'submit'
+  type: 'submit',
 })`
   justify-content: center;
   align-items: center;

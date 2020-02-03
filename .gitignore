@@ -6,15 +6,6 @@
 #
 *.env
 
-# CLOUD FUNCTIONS 
-#
-cloud_functions/
-node_modules/
-
-# FIREBASE 
-#
-firebase.json
-
 
 # Xcode
 #
