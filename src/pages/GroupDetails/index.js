@@ -44,7 +44,11 @@ enviarEmails = async participantes => {
     .httpsCallable('sendMail')({
       participantes,
     })
-    .then(() => Toast.show('E-mails enviados com sucesso'))
+    .then(() =>
+      Toast.show(
+        'E-mails enviados com sucesso, Não esqueça ed verificar na caixa de spam',
+      ),
+    )
     .catch(e =>
       Toast.show('Ocorreu um erro ao enviar os e-mails, Tente novamente'),
     );
@@ -62,6 +66,10 @@ export default function GroupDetails({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
 
   let inputs = [];
+  const grupoParam = navigation.getParam('grupo', undefined);
+  useEffect(() => {
+    setGrupo(grupoParam);
+  }, [grupoParam]);
 
   useEffect(() => {
     grupos.map(g => {
