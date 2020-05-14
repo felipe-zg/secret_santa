@@ -21,6 +21,8 @@ O app amigo oculto facilita a sua vida, permitindo que você crie um grupo com o
 <h3>Resultado</h3>
 Agora basta marcar a data da festa e aproveitar.
 
+<h6>Teste o app</h6>
+
 - [Download do app na play store](https://play.google.com/store/apps/details?id=com.felipezeba.mobile)
 - [Linkedin](https://linkedin.com/in/felipe-zeba)
 
