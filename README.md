@@ -3,7 +3,7 @@
 </h1>
 
 <h4 align="center">
-   Event Now
+   Secret Santa
 </h4>
 
 <p align="center">
